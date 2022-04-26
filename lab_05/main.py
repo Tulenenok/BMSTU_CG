@@ -50,6 +50,8 @@ def main():
                 command=lambda: c.canva.drawCut(), bg=Settings.COLOR_MAIN_BG).place(
         x=Settings.X_INPUT + 85, y=Settings.Y_INPUT)
 
+    selectMethod(root, c)
+
     root.mainloop()
 
 

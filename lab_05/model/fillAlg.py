@@ -70,16 +70,16 @@ def fillWithPartitionWithDelay(segments, canva, setCutPixels=[]):               
             # закрашиваем пиксели между ними
             for x in range(min_inter, max_inter):
                 if min_x <= x <= max_x:
-                    if (x, y) not in isShown and (x, y) not in setCutPixels:
-                        isShown[(x, y)] = True
-                        newPix = Pixel(x=x, y=y, color=canva.colorPoints)
-                        pixInd[(x, y)] = len(pixAll)
-                        pixAll.append(newPix)
-                        newPix.show(canva)
-                        canva.update()
-                    else:
-                        isShown[(x, y)] = False
-                        pixAll[pixInd[(x, y)]].hide(canva)
+                    if (x, y) not in setCutPixels:
+                        if (x, y) not in isShown.keys() or not isShown[(x, y)]:
+                            isShown[(x, y)] = True
+                            newPix = Pixel(x=x, y=y, color=canva.colorPoints)
+                            pixInd[(x, y)] = len(pixAll)
+                            pixAll.append(newPix)
+                            newPix.show(canva)
+                        else:
+                            isShown[(x, y)] = False
+                            pixAll[pixInd[(x, y)]].hide(canva)
                         canva.update()
 
     for p in pixAll:

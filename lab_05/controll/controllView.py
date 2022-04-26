@@ -6,6 +6,7 @@ from view.Btn import WrapButton
 from view.CanvasPoint import CanvasPoint
 from view.Settings import Settings
 from view.keyInput import *
+from tkinter import ttk
 
 from model.Tools import Tools
 
@@ -138,3 +139,21 @@ class UpButtons:
         self.bGo.show(posx=startX + 4 * Settings.BTN_STEP, posy=startY)
 
         self.f.place(x=posx, y=posy)
+
+def updateMethod(event, field):
+    if event == "Без задержки":
+        field.canva.needDelay = False
+    elif event == "С задержкой":
+        field.canva.needDelay = True
+    else:
+        print('Неверный метод')
+
+def selectMethod(root, field):
+    font = ("Arial", 10)
+    cb = ttk.Combobox(root, values=["Без задержки", "С задержкой"], font=font, state="readonly")
+    root.option_add('*TCombobox*Listbox.font', font)
+    cb.place(relx=0.742, y=Settings.Y_INPUT + 34)
+
+    cb.current(0)
+
+    cb.bind("<<ComboboxSelected>>", lambda event: updateMethod(cb.get(), field))
