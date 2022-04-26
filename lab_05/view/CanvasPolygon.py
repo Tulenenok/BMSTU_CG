@@ -116,6 +116,9 @@ class CanvasPolLine:
                 self.points.pop(i)
                 wasDel = True
 
+        if len(self.points) > 1 and self.points[0] != self.points[-1]:
+            self.addPoint(field, CanvasPoint(self.points[0].x, self.points[0].y, self.points[0].color, showComments=self.points[0].showComments))
+
         self.reShow(field)
         return wasDel
 

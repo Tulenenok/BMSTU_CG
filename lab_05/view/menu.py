@@ -36,8 +36,7 @@ class menuFrame:
                                                                       }))
         self.menu.add_cascade(label='Setting', menu=self.settingMenu)
         self.menu.add_cascade(label='Info', menu=self.__makeDropDown({'Информация о программе': self.__info_programm,
-                                                                      'Информация об авторе': self.__info_author,
-                                                                      'Справка': lambda : showinfo('Info', self.sp)
+                                                                      'Информация об авторе': self.__info_author
                                                                       }))
         self.menu.add_cascade(label='Exit', menu=self.__makeDropDown({'Выход': self.window.destroy}))
         return self.menu
@@ -57,5 +56,4 @@ class menuFrame:
         showinfo('Info', 'Автор: Гурова Наталия ИУ7-44Б')
 
     def __info_programm(self):
-        showinfo('Info', 'Программа не была создана 13.02.22, 14.02.22 и даже 28.02.22 \n\n'
-                         'Задание: в час ночи нарисуйте лося. Просто нарисуйте')
+        showinfo('Info', 'Программа была создана 27.04 (но это не точно)\n\nМетод: алгоритм заполнения с перегородкой.')

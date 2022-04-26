@@ -136,7 +136,7 @@ class UpButtons:
         self.bInput.show(posx=startX + 1 * Settings.BTN_STEP, posy=startY)
         self.bSave.show(posx=startX + 2 * Settings.BTN_STEP, posy=startY)
         self.bClear.show(posx=startX + 3 * Settings.BTN_STEP, posy=startY)
-        self.bGo.show(posx=startX + 4 * Settings.BTN_STEP, posy=startY)
+        #self.bGo.show(posx=startX + 4 * Settings.BTN_STEP, posy=startY)
 
         self.f.place(x=posx, y=posy)
 
