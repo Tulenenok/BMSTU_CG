@@ -98,7 +98,7 @@ class CoordGrid(ResizingCanvas):
                 return Tools.EXIT_FAILURE
 
         self.XStart, self.XEnd, self.YStart, self.YEnd = XStart, XEnd, YStart, YEnd
-        self.update()
+        self.myUpdate()
 
     def coordinateShift(self, canvasPoint):
         return self.XShiftPC(canvasPoint.x), self.YShiftPC(canvasPoint.y)
@@ -193,14 +193,14 @@ class CoordGrid(ResizingCanvas):
         self.gridHide()
         self.gridShow()
 
-    def update(self):
+    def myUpdate(self):
         self.arrowsUpdate()
         self.gridUpdate()
 
     def resize(self, event):
         super().resize(event)
         self.correct_field()
-        self.update()
+        self.myUpdate()
 
     def correct_field(self):
         width = self.winfo_width()
@@ -279,11 +279,11 @@ class CoordGrid(ResizingCanvas):
             self.gridCoefX = self.gridCoefX + 1 if 'X' in axis and self.gridCoefX < 10 else self.gridCoefX
             self.gridCoefY = self.gridCoefY + 1 if 'Y' in axis and self.gridCoefY < 10 else self.gridCoefY
 
-        self.update()
+        self.myUpdate()
 
     def flagShowGrid(self, flag):
         self.showArrows = flag
-        self.update()
+        self.myUpdate()
 
 
 class CartesianField(CoordGrid):
@@ -355,8 +355,8 @@ class CartesianField(CoordGrid):
         self.circles.append(circle)
         circle.show(self)
 
-    def update(self):
-        super().update()
+    def myUpdate(self):
+        super().myUpdate()
         self.updateShowFlags()
 
         for point in self.points:
@@ -393,7 +393,7 @@ class CartesianField(CoordGrid):
         self.lines = lines
         self.circles = circles
 
-        self.update()
+        self.myUpdate()
         return Tools.EXIT_SUCCESS
 
     def rightClick(self, XEvent, YEvent):
@@ -418,11 +418,14 @@ class PolygonField(CartesianField):
         super(PolygonField, self).__init__(rootFrame, root, **kwargs)
 
         self.colorNowPol = Settings.COLOR_LINE
-        self.polygons = [CanvasPolLine([], self.colorNowPol)]
 
         self.fillPoint = None
 
         self.rotatePoint = CanvasPoint(0, 0)
+
+        self.fillOrCut = True
+        self.needDelay = False
+        self.polygons = [CanvasPolLine([], self.colorNowPol, fillOrCut=self.fillOrCut)]
 
     def click(self, event):
         newPoint = CanvasPoint(int(self.XShiftCP(event.x)), int(self.YShiftCP(event.y)),
@@ -430,6 +433,14 @@ class PolygonField(CartesianField):
         self.polygons[-1].addPoint(self, newPoint)
 
         self.save()
+
+    def drawFill(self):
+        self.fillOrCut = True
+        self.polygons[-1].fillOrCut = True
+
+    def drawCut(self):
+        self.fillOrCut = False
+        self.polygons[-1].fillOrCut = False
 
     def showCoords(self, event):
         super(PolygonField, self).showCoords(event)
@@ -446,18 +457,25 @@ class PolygonField(CartesianField):
     def clear(self):
         for pol in self.polygons:
             pol.hide(self)
-        self.polygons = [CanvasPolLine([], self.colorNowPol)]
+        self.polygons = [CanvasPolLine([], self.colorNowPol, fillOrCut=self.fillOrCut)]
 
     def clearResult(self):
         self.clear()
 
-    def update(self):
-        super(PolygonField, self).update()
+    def myUpdate(self):
+        super(PolygonField, self).myUpdate()
+        cutPixels = []
         for pol in self.polygons:
-            pol.reShow(self)
+            if not pol.fillOrCut:          # вырезанный полигон
+                pol.reShow(self)
+                cutPixels += pol.pixels
 
-        ''' РАСКОММЕНТИРОВАТЬ ЭТУ СТРОКУ ДЛЯ ПОКАЗА ТОЧКИ ПОВОРОТА '''
-        # self.rotatePoint.reShow(self)
+        for pol in self.polygons:
+            if pol.fillOrCut:              # отрисовка с вырезанными
+                if not self.needDelay:
+                    pol.reShow(self, cutPixels=cutPixels)
+                else:
+                    pol.reShowWithDelay(self, cutPixels)
 
     def saveCanva(self, f):
         pickle.dump(self.polygons, f)
@@ -472,7 +490,7 @@ class PolygonField(CartesianField):
         self.clear()
 
         self.polygons = polygons
-        self.update()
+        self.myUpdate()
         return Tools.EXIT_SUCCESS
 
     def updateShowFlags(self):
@@ -489,7 +507,7 @@ class PolygonField(CartesianField):
                     if len(pol.points) < 2:
                         pol.fillFlag = False
 
-        self.update()
+        self.myUpdate()
         self.save()
 
     def changeColor(self, XEvent, YEvent):
@@ -502,11 +520,13 @@ class PolygonField(CartesianField):
                 if point.isClick(self, XEvent, YEvent):
                     pol.changeColor(color, color)
 
-        self.update()
+        self.myUpdate()
         self.save()
 
     def startNewPolygon(self, event):
-        self.polygons.append(CanvasPolLine([], color=self.colorNowPol))
+        self.polygons.append(CanvasPolLine([], color=self.colorNowPol, fillOrCut=self.fillOrCut))
+        self.myUpdate()
+
 
     def startNewPolygonClose(self, event):
         try:
@@ -549,7 +569,7 @@ class PolygonField(CartesianField):
             if len(pol.points) == 0:
                 self.polygons.remove(pol)
 
-        self.update()
+        self.myUpdate()
         return wasDel
 
     def rotate(self, pointerCenter, alpha):
@@ -558,7 +578,7 @@ class PolygonField(CartesianField):
             pol.rotatePol(pointerCenter, alpha)
 
         self.rotatePoint = pointerCenter
-        self.update()
+        self.myUpdate()
         self.save()
 
     def shift(self, xShift, yShift):
@@ -566,7 +586,7 @@ class PolygonField(CartesianField):
             pol.hide(self)
             pol.shiftPol(xShift, yShift)
 
-        self.update()
+        self.myUpdate()
         self.save()
 
     def scale(self, x, y, kx, ky):
@@ -574,7 +594,7 @@ class PolygonField(CartesianField):
             pol.hide(self)
             pol.scalePol(x, y, kx, ky)
 
-        self.update()
+        self.myUpdate()
         self.save()
 
     def mouseRotate(self, mode):
@@ -685,7 +705,7 @@ class WrapCanva:
 
     def radioShowComments(self):
         self.canva.ShowComments = not self.canva.ShowComments
-        self.canva.update()
+        self.canva.myUpdate()
 
     def changeColorNewPol(self):
         color = askcolor()[1]
@@ -695,5 +715,5 @@ class WrapCanva:
         self.canva.colorNowPol = color
         self.canva.polygons[-1].changeColor(color, color)
 
-        self.canva.update()
+        self.canva.myUpdate()
         self.canva.save()

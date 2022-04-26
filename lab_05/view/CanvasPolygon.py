@@ -3,15 +3,19 @@ from view.Settings import *
 from view.CanvasLine import *
 from view.CanvasSegment import *
 from view.CanvasPoint import *
+import time
 from model.fillAlg import *
 
 
 class CanvasPolLine:
-    def __init__(self, points, color=Settings.COLOR_LINE, width=2, showComments=True):
+    def __init__(self, points, color=Settings.COLOR_LINE, width=2, showComments=True, fillOrCut=True):
         self.points = points
+
+        self.fillOrCut = fillOrCut
 
         self.colorLine = color
         self.colorPoints = color
+
         self.width = width
 
         self.lines = []
@@ -23,7 +27,11 @@ class CanvasPolLine:
 
         self.fillFlag = False
 
-    def updatePixels(self, field):
+    def updatePixels(self, field, cutPixels=[]):
+        setCutPixels = set()
+        for p in cutPixels:
+            setCutPixels.add((p.x, p.y))
+
         self.pixels.clear()
 
         # self.updateLines()
@@ -32,9 +40,8 @@ class CanvasPolLine:
 
         fillPixels = fillWithPartition(self.lines)
         for p in fillPixels.keys():
-            if fillPixels[p]:
+            if fillPixels[p] and p not in setCutPixels:
                 self.pixels.append(Pixel(x=p[0], y=p[1], color=self.colorPoints))
-                #self.pixels.append(Pixel(x=p[0], y=p[1]))
 
 
     def show(self, field):
@@ -44,8 +51,17 @@ class CanvasPolLine:
         for l in self.lines:
             l.show(field)
 
-        for p in self.pixels:
+        if self.fillOrCut:
+            for p in self.pixels:
+                p.show(field)
+
+    def showWithDelay(self, field):
+        for p in self.points:
             p.show(field)
+
+        for l in self.lines:
+            l.show(field)
+
 
     def hide(self, field):
         for p in self.points:
@@ -67,11 +83,29 @@ class CanvasPolLine:
         self.points.append(newPoint)
         self.reShow(field)
 
-    def reShow(self, field):
+    def reShowWithDelay(self, field, cutPixels=[]):
+        self.hide(field)
+        self.updateLines()
+        self.pixels.clear()
+        self.showWithDelay(field)
+
+        for l in self.lines:
+            l.findFieldLine(field)
+
+        setCutPixels = set()
+        for p in cutPixels:
+            setCutPixels.add((p.x, p.y))
+
+        self.pixels = fillWithPartitionWithDelay(self.lines, field, setCutPixels)
+
+        # if self.fillFlag:
+        #     self.updatePixels(field, cutPixels)
+
+    def reShow(self, field, cutPixels=[]):
         self.hide(field)
         self.updateLines()
         if self.fillFlag:
-            self.updatePixels(field)
+            self.updatePixels(field, cutPixels)
         self.show(field)
 
     def delPoint(self, field, delPoint):
@@ -88,7 +122,11 @@ class CanvasPolLine:
     def updateLines(self):
         self.lines.clear()
         for i in range(len(self.points) - 1):
-            self.lines.append(CanvasSegment(self.points[i], self.points[i + 1], self.colorLine))
+            if not self.fillOrCut:
+                self.lines.append(CanvasSegment(self.points[i], self.points[i + 1], self.colorLine, dash=(50, 1)))
+            else:
+                self.lines.append(CanvasSegment(self.points[i], self.points[i + 1], self.colorLine))
+
 
     def isPointOn(self, field, X, Y):
         for p in self.points:

@@ -55,10 +55,12 @@ class CanvasPoint(Point):
         return False
 
     def highlight(self, field):
-        self.r = 5
+        pass
+        # self.r = 5
 
     def hideHightlight(self, field):
-        self.r = 2
+        pass
+        # self.r = 2
 
 class Pixel(CanvasPoint):
     def __init__(self, **kwargs):

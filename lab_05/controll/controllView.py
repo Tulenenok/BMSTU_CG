@@ -21,7 +21,7 @@ def addPointKey(canva, XYform):
     canva.canva.showPoint(float(x), float(y))
     XYform.clear()
 
-    canva.canva.update()
+    canva.canva.myUpdate()
     canva.canva.save()
 
 
@@ -92,7 +92,7 @@ def inputPointsFromFile(canva):
 
         canva.canva.startNewPolygon('sdfv')
 
-    canva.canva.update()
+    canva.canva.myUpdate()
     canva.canva.save()
 
 
