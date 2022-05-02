@@ -427,12 +427,23 @@ class PolygonField(CartesianField):
         self.needDelay = False
         self.polygons = [CanvasPolLine([], self.colorNowPol, fillOrCut=self.fillOrCut)]
 
+        self.inputPol = True # Вводим полигон или затравку
+
     def click(self, event):
-        newPoint = CanvasPoint(int(self.XShiftCP(event.x)), int(self.YShiftCP(event.y)),
-                               self.polygons[-1].colorLine, showComments=self.ShowComments)
-        self.polygons[-1].addPoint(self, newPoint)
+        if self.inputPol:
+            newPoint = CanvasPoint(int(self.XShiftCP(event.x)), int(self.YShiftCP(event.y)),
+                                   self.polygons[-1].colorLine, showComments=self.ShowComments)
+            self.polygons[-1].addPoint(self, newPoint)
+        else:
+            self.polygons[-1].fillFlag = True
+            self.polygons[-1].changeStartPixel(int(event.x), int(event.y),
+                                               color=self.colorNowPol, showComments=self.ShowComments)
+            self.polygons[-1].reShow(self)
+            self.startNewPolygon(event)
+            self.inputPol = True
 
         self.save()
+
 
     def drawFill(self):
         self.fillOrCut = True
@@ -534,14 +545,11 @@ class PolygonField(CartesianField):
 
     def startNewPolygonClose(self, event):
         try:
-            print('close')
-            self.polygons[-1].fillFlag = True
             lastPoint = CanvasPoint(self.polygons[-1].points[0].x, self.polygons[-1].points[0].y, color=self.colorNowPol)
             self.polygons[-1].addPoint(self, lastPoint)
         except:
             pass
-        self.polygons[-1].reShow(self)
-        self.startNewPolygon(event)
+        self.inputPol = False
 
     def updatePoints(self):
         self.points = []
@@ -717,7 +725,8 @@ class WrapCanva:
             return
 
         self.canva.colorNowPol = color
-        self.canva.polygons[-1].changeColor(color, color)
+        if self.canva.inputPol:
+            self.canva.polygons[-1].changeColor(color, color)
 
         self.canva.myUpdate()
         self.canva.save()

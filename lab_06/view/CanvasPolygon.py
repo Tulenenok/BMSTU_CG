@@ -24,9 +24,12 @@ class CanvasPolLine:
         self.showComments = showComments
 
         self.pixels = []
-        self.startPixel = Pixel(x=0, y=0, color=self.colorPoints)
+        self.startPixel = None
 
         self.fillFlag = False
+
+    def changeStartPixel(self, newX, newY, color, showComments=False):
+        self.startPixel = Pixel(x=newX, y=newY, color=color, showComments=showComments)
 
     def updatePixels(self, field, cutPixels=[]):
         setCutPixels = set()
@@ -50,6 +53,9 @@ class CanvasPolLine:
         for l in self.lines:
             l.show(field)
 
+        if self.startPixel:
+            self.startPixel.showLikePoint(field)
+
     def showWithDelay(self, field):
         for p in self.points:
             p.show(field)
@@ -57,6 +63,9 @@ class CanvasPolLine:
         self.updateLines()
         for l in self.lines:
             l.show(field)
+
+        if self.startPixel:
+            self.startPixel.showLikePoint(field)
 
     def hide(self, field):
         for p in self.points:
@@ -71,6 +80,9 @@ class CanvasPolLine:
         self.lines.clear()
         self.pixels.clear()
 
+        if self.startPixel:
+            self.startPixel.hide(field)
+
     def addPoint(self, field, newPoint):
         if len(self.points) > 0:
             self.lines.append(CanvasSegment(self.points[-1], newPoint, self.colorLine))
@@ -79,7 +91,7 @@ class CanvasPolLine:
         self.reShow(field)
 
     def reShowWithDelay(self, field, cutPixels=[], startPixel=Pixel(x=0, y=0, color=Settings.COLOR_NEW_POINT)):
-        self.startPixel = Pixel(x=field.XShiftPC(0), y=field.YShiftPC(0), color=Settings.COLOR_NEW_POINT)
+        # self.startPixel = Pixel(x=field.XShiftPC(0), y=field.YShiftPC(0), color=Settings.COLOR_NEW_POINT)
         self.hide(field)
         self.pixels.clear()
         self.showWithDelay(field)
@@ -96,7 +108,7 @@ class CanvasPolLine:
                                                  colorBorder=self.colorLine, delay=True)
 
     def reShow(self, field, cutPixels=[]):
-        self.startPixel = Pixel(x=field.XShiftPC(0), y=field.YShiftPC(0), color=Settings.COLOR_NEW_POINT)
+        # self.startPixel = Pixel(x=field.XShiftPC(0), y=field.YShiftPC(0), color=Settings.COLOR_NEW_POINT)
 
         self.hide(field)
         self.show(field)

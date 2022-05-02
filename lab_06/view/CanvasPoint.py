@@ -65,10 +65,14 @@ class CanvasPoint(Point):
 class Pixel(CanvasPoint):
     def __init__(self, **kwargs):
         super(Pixel, self).__init__(**kwargs)
-        self.r = 0
+        self.r = 2
 
     def show(self, field):
         self.p = field.create_polygon([self.x, self.y], [self.x, self.y + 1], [self.x + 1, self.y + 1], [self.x + 1, self.y], fill=self.color)
         # self.p = field.create_oval(self.x - self.r, self.y - self.r,self.x + self.r, self.y + self.r,
         #                            fill=self.color, outline=self.color)
+
+    def showLikePoint(self, field):
+        self.p = field.create_oval(self.x - self.r, self.y - self.r, self.x + self.r, self.y + self.r, fill=self.color, outline=self.color)
+
 
