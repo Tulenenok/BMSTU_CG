@@ -24,6 +24,7 @@ class CanvasPolLine:
         self.showComments = showComments
 
         self.pixels = []
+        self.startPixel = Pixel(x=0, y=0, color=self.colorPoints)
 
         self.fillFlag = False
 
@@ -37,11 +38,9 @@ class CanvasPolLine:
         for l in self.lines:
             l.findFieldLine(field)
 
-        fillPixels = fillWithPartition(self.lines)
-        for p in fillPixels.keys():
-            if fillPixels[p] and p not in setCutPixels:
-                self.pixels.append(Pixel(x=p[0], y=p[1], color=self.colorPoints))
-
+        self.pixels = fillWithPartitionWithDelay(self.lines, field,
+                                                 setCutPixels, self.startPixel,
+                                                 colorBorder=self.colorLine, delay=False)
 
     def show(self, field):
         for p in self.points:
@@ -49,10 +48,6 @@ class CanvasPolLine:
 
         for l in self.lines:
             l.show(field)
-
-        if self.fillOrCut:
-            for p in self.pixels:
-                p.show(field)
 
     def showWithDelay(self, field):
         for p in self.points:
@@ -81,8 +76,8 @@ class CanvasPolLine:
         self.points.append(newPoint)
         self.reShow(field)
 
-    def reShowWithDelay(self, field, cutPixels=[], startPixel=Pixel(x=0, y=0, color=Settings.COLOR_HOVER_BTN)):
-        startPixel = Pixel(x=field.XShiftPC(0), y=field.YShiftPC(0), color=Settings.COLOR_HOVER_BTN)
+    def reShowWithDelay(self, field, cutPixels=[], startPixel=Pixel(x=0, y=0, color=Settings.COLOR_NEW_POINT)):
+        self.startPixel = Pixel(x=field.XShiftPC(0), y=field.YShiftPC(0), color=Settings.COLOR_NEW_POINT)
         self.hide(field)
         self.updateLines()
         self.pixels.clear()
@@ -95,14 +90,24 @@ class CanvasPolLine:
         for p in cutPixels:
             setCutPixels.add((p.x, p.y))
 
-        self.pixels = fillWithPartitionWithDelay(self.lines, field, setCutPixels, startPixel, colorBorder=self.colorLine)
+        self.pixels = fillWithPartitionWithDelay(self.lines, field,
+                                                 setCutPixels, self.startPixel,
+                                                 colorBorder=self.colorLine, delay=True)
 
     def reShow(self, field, cutPixels=[]):
+        self.startPixel = Pixel(x=field.XShiftPC(0), y=field.YShiftPC(0), color=Settings.COLOR_NEW_POINT)
+
         self.hide(field)
         self.updateLines()
+        self.show(field)
+
         if self.fillFlag:
             self.updatePixels(field, cutPixels)
-        self.show(field)
+
+        if self.fillOrCut:
+            for p in self.pixels:
+                if (p.x, p.y) not in cutPixels:
+                    p.show(field)
 
     def delPoint(self, field, delPoint):
         wasDel = False
@@ -125,7 +130,6 @@ class CanvasPolLine:
                 self.lines.append(CanvasSegment(self.points[i], self.points[i + 1], self.colorLine, dash=(50, 1)))
             else:
                 self.lines.append(CanvasSegment(self.points[i], self.points[i + 1], self.colorLine))
-
 
     def isPointOn(self, field, X, Y):
         for p in self.points:

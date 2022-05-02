@@ -475,7 +475,7 @@ class PolygonField(CartesianField):
                 if not self.needDelay:
                     pol.reShow(self, cutPixels=cutPixels)
                 else:
-                    pol.reShowWithDelay(self, cutPixels)
+                    pol.reShowWithDelay(self, cutPixels=cutPixels)
 
     def saveCanva(self, f):
         pickle.dump(self.polygons, f)

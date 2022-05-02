@@ -57,7 +57,7 @@ def findNextStackPoints(x, y, xmax, ymax, xmin, ymin, borders, wasFill):
     return stack
 
 
-def fillRowPixels(xSeed, ySeed, canva, colorBorder, colorFill, borders, wasFill):
+def fillRowPixels(xSeed, ySeed, canva, colorBorder, colorFill, borders, wasFill, delay=False, cutPixels=[]):
     fillPixels = []
     setCoord = set()
     stackPoints = []
@@ -71,10 +71,13 @@ def fillRowPixels(xSeed, ySeed, canva, colorBorder, colorFill, borders, wasFill)
 
         setCoord.add((xLeft, ySeed))
 
-        newPix = Pixel(x=xLeft, y=ySeed, color=colorFill)
-        fillPixels.append(newPix)
-        newPix.show(canva)
-        canva.update()
+        if (xLeft, ySeed) not in cutPixels:
+            newPix = Pixel(x=xLeft, y=ySeed, color=colorFill)
+            fillPixels.append(newPix)
+
+            if delay:
+                newPix.show(canva)
+                canva.update()
         
         stackPoints += findNextStackPoints(xLeft, ySeed, canva.winfo_width(), canva.winfo_height(), 0, 0, borders, wasFill)
 
@@ -88,10 +91,13 @@ def fillRowPixels(xSeed, ySeed, canva, colorBorder, colorFill, borders, wasFill)
 
         setCoord.add((xRight, ySeed))
 
-        newPix = Pixel(x=xRight, y=ySeed, color=colorFill)
-        fillPixels.append(newPix)
-        newPix.show(canva)
-        canva.update()
+        if (xRight, ySeed) not in cutPixels:
+            newPix = Pixel(x=xRight, y=ySeed, color=colorFill)
+            fillPixels.append(newPix)
+
+            if delay:
+                newPix.show(canva)
+                canva.update()
 
         stackPoints += findNextStackPoints(xRight, ySeed, canva.winfo_width(), canva.winfo_height(), 0, 0, borders, wasFill)
 
@@ -100,12 +106,15 @@ def fillRowPixels(xSeed, ySeed, canva, colorBorder, colorFill, borders, wasFill)
     return xLeft, xRight, fillPixels, setCoord, stackPoints
 
 
-def fillWithPartitionWithDelay(segments, canva, setCutPixels=[], startPixel=Pixel(x=0, y=0, color=Settings.COLOR_HOVER_BTN), colorBorder=Settings.COLOR_LINE):
+def fillWithPartitionWithDelay(segments, canva, setCutPixels=[],
+                               startPixel=Pixel(x=0, y=0, color=Settings.COLOR_HOVER_BTN),
+                               colorBorder=Settings.COLOR_LINE,
+                               delay=False):
     if len(segments) == 0:
         print('Пустой массив отрезков')
         return []
 
-    colorFill = 'blue'                #startPixel.color
+    colorFill = startPixel.color
 
     # Собираем все пиксели на границах в одно множество, чтобы потом проверять, дошли мы до границы или нет
     allPixelsOnBorder = set()
@@ -117,7 +126,6 @@ def fillWithPartitionWithDelay(segments, canva, setCutPixels=[], startPixel=Pixe
     allPixels = []
     fillPixCoor = set()             # пиксели, которые уже были закрашены, чтобы эти строчки сразу пропускать
     while len(stackSeed) > 0:
-        # print(stackSeed)
         workPixel = stackSeed.pop()
 
         if workPixel in allPixelsOnBorder:
@@ -131,18 +139,17 @@ def fillWithPartitionWithDelay(segments, canva, setCutPixels=[], startPixel=Pixe
 
         xL, xR, p, s, nextStack = fillRowPixels(workPixel[0], workPixel[1], canva,
                                      colorBorder=colorBorder, colorFill=colorFill,
-                                     borders=allPixelsOnBorder, wasFill=fillPixCoor)
+                                     borders=allPixelsOnBorder, wasFill=fillPixCoor, delay=delay, cutPixels=setCutPixels)
+        # if delay:
+        #     canva.update()
+
         allPixels += p
         fillPixCoor = fillPixCoor.union(s)
 
         stackSeed += nextStack
 
-        # stackSeed.append((xL + 1, workPixel[1] + 1))
-        # stackSeed.append((xL + 1, workPixel[1] - 1))
-        # stackSeed.append((xR - 1, workPixel[1] + 1))
-        # stackSeed.append((xR - 1, workPixel[1] - 1))
-
-        time.sleep(0.2)
+        # if delay:
+        #     time.sleep(0.2)
 
     return allPixels
 
