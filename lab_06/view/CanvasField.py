@@ -428,6 +428,7 @@ class PolygonField(CartesianField):
         self.polygons = [CanvasPolLine([], self.colorNowPol, fillOrCut=self.fillOrCut)]
 
         self.inputPol = True # Вводим полигон или затравку
+        self.config(cursor="@pencil1.cur")
 
     def click(self, event):
         if self.inputPol:
@@ -442,6 +443,7 @@ class PolygonField(CartesianField):
             self.startNewPolygon(event)
             self.inputPol = True
 
+            self.config(cursor="@pencil1.cur")
         self.save()
 
 
@@ -549,6 +551,7 @@ class PolygonField(CartesianField):
             self.polygons[-1].addPoint(self, lastPoint)
         except:
             pass
+        self.config(cursor="@fill1.cur")
         self.inputPol = False
 
     def updatePoints(self):
