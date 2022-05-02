@@ -46,6 +46,7 @@ class CanvasPolLine:
         for p in self.points:
             p.show(field)
 
+        self.updateLines()
         for l in self.lines:
             l.show(field)
 
@@ -53,6 +54,7 @@ class CanvasPolLine:
         for p in self.points:
             p.show(field)
 
+        self.updateLines()
         for l in self.lines:
             l.show(field)
 
@@ -79,7 +81,6 @@ class CanvasPolLine:
     def reShowWithDelay(self, field, cutPixels=[], startPixel=Pixel(x=0, y=0, color=Settings.COLOR_NEW_POINT)):
         self.startPixel = Pixel(x=field.XShiftPC(0), y=field.YShiftPC(0), color=Settings.COLOR_NEW_POINT)
         self.hide(field)
-        self.updateLines()
         self.pixels.clear()
         self.showWithDelay(field)
 
@@ -98,7 +99,6 @@ class CanvasPolLine:
         self.startPixel = Pixel(x=field.XShiftPC(0), y=field.YShiftPC(0), color=Settings.COLOR_NEW_POINT)
 
         self.hide(field)
-        self.updateLines()
         self.show(field)
 
         if self.fillFlag:

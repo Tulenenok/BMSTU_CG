@@ -466,6 +466,10 @@ class PolygonField(CartesianField):
         super(PolygonField, self).myUpdate()
         cutPixels = []
         for pol in self.polygons:
+            pol.hide(self)
+            pol.show(self)
+
+        for pol in self.polygons:
             if not pol.fillOrCut:          # вырезанный полигон
                 pol.reShow(self)
                 cutPixels += pol.pixels
