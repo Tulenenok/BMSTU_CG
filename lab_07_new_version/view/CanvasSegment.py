@@ -62,10 +62,7 @@ class CanvasSegment(Line):
         self.coordShift(field)
 
         self.pixSet = dda_line(self.xStart, self.yStart, self.xEnd, self.yEnd)
-        lst = sorted(list(self.pixSet))
-        # for l in lst:
-        #     print(l)
-        for p in lst:
+        for p in self.pixSet:
             self.pixels.append(Pixel(x=p[0], y=p[1], color=self.color))
 
             if not self.WasGo:
@@ -74,14 +71,13 @@ class CanvasSegment(Line):
 
             if self.InOrOut:
                 for cut in self.cutArea:
-                    # print(p, p[0] > cut[0] and p[1] < cut[1])
                     if len(cut) > 0 and p[0] > cut[0] and p[0] < cut[1]:
                         self.pixels[-1].show(field)
 
             if not self.InOrOut:
                 flagShow = True
                 for cut in self.cutArea:
-                    if len(cut) > 0 and p[0] >= cut[0] and p[0] <= cut[1]:
+                    if len(cut) > 0 and p[0] > cut[0] and p[0] < cut[1]:
                         flagShow = False
                 if flagShow:
                     self.pixels[-1].show(field)
@@ -95,7 +91,7 @@ class CanvasSegment(Line):
     def showLikeClipper(self, field):
         self.coordShift(field)
 
-        self.rec = field.create_rectangle(self.xStart, self.yStart, self.xEnd, self.yEnd, outline=self.color, width=1)
+        self.rec = field.create_rectangle(self.xStart, self.yStart, self.xEnd, self.yEnd, outline=self.color, width=2)
 
 
     def hide(self, field):

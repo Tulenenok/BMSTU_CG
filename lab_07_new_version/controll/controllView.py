@@ -155,6 +155,7 @@ def goCut(root, c):
             clippers.append(i)
 
     for s in segments:
+        s.cutArea = []
         for c in clippers:
             SE = cut(s, c)
             if SE != 'error':
