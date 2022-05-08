@@ -136,12 +136,11 @@ def fillWithPartitionWithDelay(segments, canva, setCutPixels=[],
             print('fill')
             continue
 
-
         xL, xR, p, s, nextStack = fillRowPixels(workPixel[0], workPixel[1], canva,
                                      colorBorder=colorBorder, colorFill=colorFill,
-                                     borders=allPixelsOnBorder, wasFill=fillPixCoor, delay=delay, cutPixels=setCutPixels)
-        # if delay:
-        #     canva.update()
+                                     borders=allPixelsOnBorder, wasFill=fillPixCoor, delay=False, cutPixels=setCutPixels)
+        if delay:
+            canva.update()
 
         allPixels += p
         fillPixCoor = fillPixCoor.union(s)

@@ -12,7 +12,7 @@ def main():
     root.geometry('850x650')
     root['bg'] = Settings.COLOR_MAIN_BG
 
-    root.iconphoto(True, PhotoImage(file=r'shared/a.png'))
+    root.iconphoto(True, PhotoImage(file=r'shared/a1.png'))
     root.title('Лабораторная работа №7')
 
     c = WrapCanva(root, Canva=PolygonField, highlightthickness=0)
@@ -30,10 +30,11 @@ def main():
     upBtns = UpButtons(root, c)
     upBtns.show()
 
+    fg = '#3a4863'#'#003539'     # '#0b384b'
     addSegmentForm = XYForm(root, Settings.COLOR_MAIN_BG, 'Add point', Settings.WIDTH_INPUT,
-                       lambda: addPointKey(c, addSegmentForm), '  Add  ')
+                       lambda: addPointKey(c, addSegmentForm), '  Add  ', fg=fg)
     delSegmentForm = XYForm(root, Settings.COLOR_MAIN_BG, 'Del point', Settings.WIDTH_INPUT,
-                       lambda: delPointKey(c, delSegmentForm), '  Del  ')
+                       lambda: delPointKey(c, delSegmentForm), '  Del  ', fg=fg)
 
     addSegmentForm.show(Settings.COLOR_MAIN_BG, Settings.X_INPUT, Settings.Y_INPUT + 30)
     delSegmentForm.show(Settings.COLOR_MAIN_BG, Settings.X_INPUT, Settings.Y_INPUT + Settings.STEP_INPUT + 30)

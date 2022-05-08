@@ -9,7 +9,7 @@ from view.keyInput import *
 from tkinter import ttk
 
 from model.Tools import Tools
-from model.clipperAlg import cut
+from model.clipperAlg import cut1
 
 import controll.controllModel
 
@@ -134,10 +134,10 @@ class UpButtons:
     def show(self, posx=Settings.X_CANVA, posy=Settings.Y_INPUT + 9):
         startX, startY = 0, 0
         self.bReturn.show(posx=startX, posy=startY)
-        self.bInput.show(posx=startX + 1 * Settings.BTN_STEP, posy=startY)
-        self.bSave.show(posx=startX + 2 * Settings.BTN_STEP, posy=startY)
-        self.bClear.show(posx=startX + 3 * Settings.BTN_STEP, posy=startY)
-        self.bGo.show(posx=startX + 4 * Settings.BTN_STEP, posy=startY)
+        # self.bInput.show(posx=startX + 1 * Settings.BTN_STEP, posy=startY)
+        # self.bSave.show(posx=startX + 2 * Settings.BTN_STEP, posy=startY)
+        self.bClear.show(posx=startX + 1 * Settings.BTN_STEP, posy=startY)
+        self.bGo.show(posx=startX + 2 * Settings.BTN_STEP, posy=startY)
 
         self.f.place(x=posx, y=posy)
 
@@ -157,9 +157,19 @@ def goCut(root, c):
     for s in segments:
         s.cutArea = []
         for c in clippers:
-            SE = cut(s, c)
+            # SE -- [(x, y), (x, y)]
+            SE = cut1(s, c)
+            print(SE)
             if SE != 'error':
-                s.cutArea.append(( min(SE[0], SE[1]), max(SE[0], SE[1]) ) if len(SE) > 0 else ())
+                if len(SE) == 0:
+                    s.cutArea.append( () )
+                    continue
+
+                p1 = (round(SE[0][0]), round(SE[0][1]))
+                p2 = (round(SE[1][0]), round(SE[1][1]))
+
+                s.cutArea.append( (p1, p2) if p1[0] < p2[0] else (p2, p1) )
+
         s.updateWasGoFlag(True)
         s.reShow(canva)
 

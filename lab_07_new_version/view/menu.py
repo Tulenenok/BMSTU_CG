@@ -29,8 +29,7 @@ class menuFrame:
         self.settingMenu = self.__makeDropDown({self.name: self.__showComment, self.gridName: self.__showGrid,
                                                 'Изменить цвет': field.changeColorNewPol})
 
-        self.menu.add_cascade(label='File', menu=self.__makeDropDown({'Открыть 📂': lambda: funcInput(field),
-                                                                      'Сохранить 📋': lambda: funcLoad(field),
+        self.menu.add_cascade(label='File', menu=self.__makeDropDown({
                                                                       'Отменить ⏎': lambda: funcReturn(),
                                                                       'Очистить 🗑': lambda: funcClean(field),
                                                                       }))
@@ -56,4 +55,4 @@ class menuFrame:
         showinfo('Info', 'Автор: Гурова Наталия ИУ7-44Б')
 
     def __info_programm(self):
-        showinfo('Info', 'Программа была создана 02.05 (но это не точно)\n\n')
+        showinfo('Info', 'Программа была создана 02.05 (но это не точно)\n\n Метод: алгоритм средней точки')

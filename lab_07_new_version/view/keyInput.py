@@ -23,6 +23,8 @@ class XYForm:
         self.xEntry.bind("<Down>", lambda event: self.yEntry.focus_set())
         self.yEntry.bind("<Up>", lambda event: self.xEntry.focus_set())
 
+        self.fg = fg
+
     def onEnter(self, btn):
         btn.widget['background'] = '#deebf1'
 
@@ -32,14 +34,14 @@ class XYForm:
     def show(self, color, posx=10, poxy=10):
         self.f.propagate(0)
 
-        Label(self.f, text="X: ", bg=color, font=('Arial', 10, 'bold'), fg="#f1e4de").grid(row=0)
-        Label(self.f, text=" ", bg=color, font=('Arial', 1, 'bold'), fg="#f1e4de").grid(row=1)
-        Label(self.f, text="Y: ", bg=color, font=('Arial', 10, 'bold'), fg="#f1e4de").grid(row=2)
+        Label(self.f, text="X: ", bg=color, font=('Arial', 10, 'bold'), fg=self.fg).grid(row=0)
+        Label(self.f, text=" ", bg=color, font=('Arial', 1, 'bold'), fg=self.fg).grid(row=1)
+        Label(self.f, text="Y: ", bg=color, font=('Arial', 10, 'bold'), fg=self.fg).grid(row=2)
 
         self.xEntry.grid(row=0, column=1, sticky=W)
         self.yEntry.grid(row=2, column=1, sticky=W)
 
-        Label(self.f, text=" ", bg=color, font=('Arial', 1, 'bold'), fg="#f1e4de").grid(row=3)
+        Label(self.f, text=" ", bg=color, font=('Arial', 1, 'bold'), fg=self.fg).grid(row=3)
         self.btn.grid(row=4, column=1, sticky="es")
 
         # self.f.pack(side=packSide, anchor=packAnchor)

@@ -21,7 +21,8 @@ def dda_line(xStart, yStart, xEnd, yEnd):
         y_arr.append(math.floor(y))
 
         points.add((math.floor(x), math.floor(y)))
-        # points.add((math.floor(x) - 1, math.floor(y)))
+        points.add((math.floor(x) - 1, math.floor(y)))
+        # points.add((math.floor(x) + 1, math.floor(y)))
 
     return points
 
@@ -69,18 +70,13 @@ class CanvasSegment(Line):
                 self.pixels[-1].show(field)
                 continue
 
-            if self.InOrOut:
-                for cut in self.cutArea:
-                    if len(cut) > 0 and p[0] > cut[0] and p[0] < cut[1]:
-                        self.pixels[-1].show(field)
+            flagShow = not self.InOrOut
+            for cut in self.cutArea:
+                if len(cut) > 0 and cut[0][0] <= p[0] <= cut[1][0] and p[1] <= max(cut[0][1], cut[1][1]) and p[1] >= min(cut[0][1], cut[1][1]):
+                    flagShow = self.InOrOut
 
-            if not self.InOrOut:
-                flagShow = True
-                for cut in self.cutArea:
-                    if len(cut) > 0 and p[0] > cut[0] and p[0] < cut[1]:
-                        flagShow = False
-                if flagShow:
-                    self.pixels[-1].show(field)
+            if flagShow:
+                self.pixels[-1].show(field)
 
 
     def findFieldLine(self, field):

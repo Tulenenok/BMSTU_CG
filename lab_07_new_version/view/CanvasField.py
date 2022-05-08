@@ -432,18 +432,22 @@ class PolygonField(CartesianField):
 
         self.InOrOut = True
 
-    def click(self, event):
-        if self.inputPol:
-            self.showPoint(int(self.XShiftCP(event.x)), int(self.YShiftCP(event.y)), self.polygons[-1].colorLine)
-        else:
-            self.polygons[-1].fillFlag = True
-            self.polygons[-1].changeStartPixel(int(event.x), int(event.y),
-                                               color=self.colorNowPol, showComments=self.ShowComments)
-            self.polygons[-1].reShow(self)
-            self.startNewPolygon(event)
-            self.inputPol = True
+        self.countSegments = 0
+        self.countClippers = 0
 
-            self.config(cursor="@pencil1.cur")
+    def click(self, event):
+        self.showPoint(int(self.XShiftCP(event.x)), int(self.YShiftCP(event.y)), self.polygons[-1].colorLine)
+        # if self.inputPol:
+        #     self.showPoint(int(self.XShiftCP(event.x)), int(self.YShiftCP(event.y)), self.polygons[-1].colorLine)
+        # else:
+        #     self.polygons[-1].fillFlag = True
+        #     self.polygons[-1].changeStartPixel(int(event.x), int(event.y),
+        #                                        color=self.colorNowPol, showComments=self.ShowComments)
+        #     self.polygons[-1].reShow(self)
+        #     self.startNewPolygon(event)
+        #     self.inputPol = True
+        #
+        #     self.config(cursor="@pencil1.cur")
         self.save()
 
     def showPoint(self, x, y, color=Settings.COLOR_NEW_POINT):
