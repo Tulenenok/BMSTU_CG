@@ -9,7 +9,7 @@ from view.keyInput import *
 from tkinter import ttk
 
 from model.Tools import Tools
-from model.clipperAlg import cut1
+from model.clipperAlg import cut
 
 import controll.controllModel
 
@@ -84,7 +84,7 @@ def inputPointsFromFile(canva):
         showinfo('Empty file', 'Выбранный файл не содержит данных, точки не обновлены.')
         return
 
-    canva.canva.clear()
+    #canva.canva.clear()
     for c in coords:
         for p in c:
             canva.canva.showPoint(p[0], p[1])
@@ -133,11 +133,14 @@ class UpButtons:
 
     def show(self, posx=Settings.X_CANVA, posy=Settings.Y_INPUT + 9):
         startX, startY = 0, 0
-        self.bReturn.show(posx=startX, posy=startY)
+        lst_show = [self.bReturn, self.bInput, self.bSave, self.bClear, self.bGo]
+        for i in range(len(lst_show)):
+            lst_show[i].show(posx=startX + i * Settings.BTN_STEP, posy=startY)
+        # self.bReturn.show(posx=startX, posy=startY)
         # self.bInput.show(posx=startX + 1 * Settings.BTN_STEP, posy=startY)
         # self.bSave.show(posx=startX + 2 * Settings.BTN_STEP, posy=startY)
-        self.bClear.show(posx=startX + 1 * Settings.BTN_STEP, posy=startY)
-        self.bGo.show(posx=startX + 2 * Settings.BTN_STEP, posy=startY)
+        # self.bClear.show(posx=startX + 1 * Settings.BTN_STEP, posy=startY)
+        # self.bGo.show(posx=startX + 2 * Settings.BTN_STEP, posy=startY)
 
         self.f.place(x=posx, y=posy)
 
@@ -158,7 +161,7 @@ def goCut(root, c):
         s.cutArea = []
         for c in clippers:
             # SE -- [(x, y), (x, y)]
-            SE = cut1(s, c)
+            SE = cut(s, c)
             print(SE)
             if SE != 'error':
                 if len(SE) == 0:

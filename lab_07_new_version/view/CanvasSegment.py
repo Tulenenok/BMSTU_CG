@@ -72,7 +72,9 @@ class CanvasSegment(Line):
 
             flagShow = not self.InOrOut
             for cut in self.cutArea:
-                if len(cut) > 0 and cut[0][0] <= p[0] <= cut[1][0] and p[1] <= max(cut[0][1], cut[1][1]) and p[1] >= min(cut[0][1], cut[1][1]):
+                if len(cut) > 0 and \
+                        cut[0][0] <= p[0] <= cut[1][0] and \
+                        max(cut[0][1], cut[1][1]) >= p[1] >= min(cut[0][1], cut[1][1]):
                     flagShow = self.InOrOut
 
             if flagShow:
