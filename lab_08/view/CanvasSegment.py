@@ -110,3 +110,12 @@ class CanvasSegment(Line):
     def reShow(self, field):
         self.hide(field)
         self.show(field)
+
+    def isInter(self, segment):
+        firstSign = self.A * segment.start.x + self.B * segment.start.y + self.C
+        secondSign = self.A * segment.end.x + self.B * segment.end.y + self.C
+
+        if firstSign * secondSign <= 0:
+            return True
+
+        return False

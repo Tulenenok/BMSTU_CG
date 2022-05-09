@@ -553,8 +553,16 @@ class PolygonField(CartesianField):
         try:
             lastPoint = CanvasPoint(self.polygons[-1].points[0].x, self.polygons[-1].points[0].y, color=self.colorNowPol)
             self.polygons[-1].addPoint(self, lastPoint)
+
         except:
             pass
+
+        if not self.polygons[-1].isConvexPolygon():
+            showinfo("Warning", "Полигон не выпуклый\n\n(так что удалим-ка его от греха подальше)")
+            self.polygons[-1].hide(self)
+            self.polygons.pop()
+
+
         self.inputPol = False
         self.startNewPolygon('fb')
 

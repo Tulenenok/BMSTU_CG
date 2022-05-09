@@ -193,3 +193,12 @@ class CanvasPolLine:
         for point in self.points:
             point.scale(x, y, kx, ky)
         self.updateLines()
+
+    # Проверка, является ли полигон выпуклым
+    def isConvexPolygon(self):
+        # self.updateLines()
+        for i, line in enumerate(self.lines):
+            for j, segment in enumerate(self.lines):
+                if j != (i - 1) % len(self.lines) and j != i and j != (i + 1) % len(self.lines) and line.isInter(segment):
+                    return False
+        return True
