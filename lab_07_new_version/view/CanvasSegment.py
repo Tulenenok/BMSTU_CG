@@ -29,7 +29,7 @@ def dda_line(xStart, yStart, xEnd, yEnd):
 
 class CanvasSegment(Line):
     def __init__(self, pointA, pointB, color='black', width=4, dash=None, arrow=None,
-                 WasGo=False, cutArea=[], InOrOut=True):
+                 WasGo=False, cutArea=[], InOrOut=True, diffColors=False):
         super().__init__(pointA, pointB)
         self.color = color
         self.width = width
@@ -49,6 +49,7 @@ class CanvasSegment(Line):
         self.cutArea = cutArea
 
         self.InOrOut = InOrOut           # Флаг, оставляем мы пиксели внутри или снаружи области
+        self.diffColors = diffColors     # Флаг, нужно ли закрашивать отрезок разными цветами вместо обрезки
         self.WasGo = WasGo
 
         # В координатах канвы
@@ -78,6 +79,10 @@ class CanvasSegment(Line):
                     flagShow = self.InOrOut
 
             if flagShow:
+                self.pixels[-1].show(field)
+
+            if not flagShow and self.diffColors:
+                self.pixels[-1].changeColor(Settings.COLOR_IN_SEGMENT)
                 self.pixels[-1].show(field)
 
 

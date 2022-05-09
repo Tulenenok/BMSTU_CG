@@ -1,5 +1,6 @@
 import math
 import pickle
+import random
 
 from PIL import ImageTk, Image
 
@@ -431,6 +432,7 @@ class PolygonField(CartesianField):
         self.config(cursor="@pencil1.cur")
 
         self.InOrOut = True
+        self.diffColors = False
 
         self.countSegments = 0
         self.countClippers = 0
@@ -553,7 +555,7 @@ class PolygonField(CartesianField):
 
     def startNewPolygon(self, event):
         self.polygons.append(CanvasPolLine([], color=self.colorNowPol, segmentOrClipper=self.segmentOrClipper,
-                                           InOrOut=self.InOrOut))
+                                           InOrOut=self.InOrOut, diffColors=self.diffColors))
         self.myUpdate()
 
 
@@ -660,6 +662,7 @@ class WrapCanva:
         self.window.bind("<Control-s>", lambda event: self.window.loadVersion(), '+')
         self.window.bind("<Control-p>", lambda event: self.canva.mouseRotate('r'), '+')
         self.window.bind("<Control-o>", lambda event: self.canva.mouseRotate('l'), '+')
+        self.window.bind("<Control-n>", lambda event: self.changeColorRandom())
 
         self.window.bind("<Control-space>", lambda event: self.canva.startNewPolygonClose(event), '+')
         self.window.bind("<Control-Shift-space>", lambda event: self.canva.startNewPolygon(event), '+')
@@ -731,10 +734,11 @@ class WrapCanva:
         self.canva.ShowComments = not self.canva.ShowComments
         self.canva.myUpdate()
 
-    def changeColorNewPol(self):
-        color = askcolor()[1]
+    def changeColorNewPol(self, color=None):
         if not color:
-            return
+            color = askcolor()[1]
+            if not color:
+                return
 
         self.canva.colorNowPol = color
         if self.canva.inputPol:
@@ -742,3 +746,18 @@ class WrapCanva:
 
         self.canva.myUpdate()
         self.canva.save()
+
+    def changeColorRandom(self):
+        newColor = Tools.rgb_to_hex(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
+        self.changeColorNewPol(newColor)
+
+
+    def changeColorDelObl(self):
+        color = askcolor()[1]
+        if not color:
+            return
+
+        Settings.COLOR_IN_SEGMENT = color
+        print(Settings.COLOR_IN_SEGMENT)
+
+

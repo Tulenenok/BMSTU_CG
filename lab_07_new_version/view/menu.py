@@ -10,13 +10,7 @@ class menuFrame:
         self.gridName = '✔ Оси координат'
         self.settingMenu = None
 
-        self.sp = 'Горячие клавиши:\n\n' \
-                  '  - Cntrl-Space -- начать новую фигуру, замкнув старую\n' \
-                  '  - Cntrl-Shift-Space -- начать новую, не замыкая старую\n' \
-                  '  - Cntrl-plus -- масштабирование х2\n' \
-                  '  - Cntrl-minus -- масштабирование х0.5\n' \
-                  '  - Cntrl-p -- поворот по часовой стрелке на 15 градусов\n' \
-                  '  - Cntrl-o -- поворот против часовой стрелки на 15 градусов'
+        self.sp = ''
 
     def __makeDropDown(self, dictLabels):
         newItem = Menu(self.menu, tearoff=0)
@@ -26,8 +20,16 @@ class menuFrame:
 
     def create(self, field, funcInput, funcLoad, funcClean, funcReturn):
         self.field = field
-        self.settingMenu = self.__makeDropDown({self.name: self.__showComment, self.gridName: self.__showGrid,
-                                                'Изменить цвет': field.changeColorNewPol})
+
+        self.settingMenu = Menu(self.menu, tearoff=0)
+
+        submenu = Menu(self.settingMenu, tearoff=False)
+        submenu.add_command(label="Основной", command=field.changeColorNewPol)
+        submenu.add_command(label="Удаляемая часть", command=field.changeColorDelObl)
+
+        self.settingMenu.add_command(label=self.name, command=self.__showComment)
+        self.settingMenu.add_command(label=self.gridName, command=self.__showGrid)
+        self.settingMenu.add_cascade(label="Изменить цвет", menu=submenu)
 
         self.menu.add_cascade(label='File', menu=self.__makeDropDown({
                                                                       'Отменить ⏎': lambda: funcReturn(),

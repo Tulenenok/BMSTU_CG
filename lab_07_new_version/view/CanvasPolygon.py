@@ -9,7 +9,7 @@ from model.fillAlg import *
 
 class CanvasPolLine:
     def __init__(self, points, color=Settings.COLOR_LINE, width=2, showComments=True, segmentOrClipper=True,
-                 InOrOut=True):
+                 InOrOut=True, diffColors=False):
         self.points = points
 
         self.segmentOrClipper = segmentOrClipper
@@ -32,6 +32,7 @@ class CanvasPolLine:
         self.cutArea = []
 
         self.InOrOut = InOrOut
+        self.diffColors = diffColors
 
     def changeStartPixel(self, newX, newY, color, showComments=False):
         self.startPixel = Pixel(x=newX, y=newY, color=color, showComments=showComments)
@@ -144,7 +145,7 @@ class CanvasPolLine:
                 self.lines.append(CanvasSegment(self.points[i], self.points[i + 1], self.colorLine, dash=(50, 1)))
             else:
                 self.lines.append(CanvasSegment(self.points[i], self.points[i + 1], self.colorLine, WasGo=self.WasGo,
-                                                cutArea=self.cutArea, InOrOut=self.InOrOut))
+                                                cutArea=self.cutArea, InOrOut=self.InOrOut, diffColors=self.diffColors))
 
     def isPointOn(self, field, X, Y):
         for p in self.points:

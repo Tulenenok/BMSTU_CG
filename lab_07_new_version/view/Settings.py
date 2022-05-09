@@ -14,6 +14,7 @@ class Settings:
     COLOR_LOC_LINE = '#976bd6'
 
     COLOR_NEW_CLIPPER = '#FF6C00'
+    COLOR_IN_SEGMENT = '#ff6d25'
 
     X_CANVA = 200
     Y_CANVA = 85

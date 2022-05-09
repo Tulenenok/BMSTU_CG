@@ -34,3 +34,10 @@ class Tools:
             return True
         except:
             return False
+
+    @staticmethod
+    def rgb_to_hex(r, g, b):
+        rh = '0' + str(hex(int(r * 255))[2:].upper())
+        gh = '0' + str(hex(int(g * 255))[2:].upper())
+        bh = '0' + str(hex(int(b * 255))[2:].upper())
+        return f'#{rh[-2:]}{gh[-2:]}{bh[-2:]}'

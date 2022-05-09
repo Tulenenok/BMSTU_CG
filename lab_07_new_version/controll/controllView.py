@@ -178,21 +178,33 @@ def goCut(root, c):
 
 
 def updateMethod(event, field):
+
+    def updateInOrOut(flag):
+        for p in field.canva.polygons:
+            p.InOrOut = flag
+        field.canva.InOrOut = flag
+
+    def updateDiffColors(flag):
+        if field.canva.diffColors == flag:
+            return
+        for p in field.canva.polygons:
+            p.diffColors = flag
+        field.canva.diffColors = flag
+
     if event == "In":
-        for p in field.canva.polygons:
-            p.InOrOut = True
-        field.canva.InOrOut = True
+        updateInOrOut(True)
+        updateDiffColors(False)
     elif event == "Out":
-        for p in field.canva.polygons:
-            p.InOrOut = False
-        field.canva.InOrOut = False
-        # field.canva.polygons[-1].InOrOut = False
+        updateInOrOut(False)
+        updateDiffColors(False)
+    elif event == "Different colors":
+        updateDiffColors(True)
     else:
         print('Неверный метод')
 
 def selectMethod(root, field):
     font = ("Arial", 10)
-    cb = ttk.Combobox(root, values=["In", "Out"], font=font, state="readonly")
+    cb = ttk.Combobox(root, values=["In", "Out", "Different colors"], font=font, state="readonly")
     root.option_add('*TCombobox*Listbox.font', font)
     cb.place(relx=0.742, y=Settings.Y_INPUT + 34)
 
