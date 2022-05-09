@@ -113,7 +113,12 @@ def cutBase(segmentPol, clipperPol, canva=None):
         farP1Inter = findInter(farP2Inter, p2, xLeft, xRight, yDown, yUp)
 
     if farP2Inter == p2:
-        farP1Inter = findInter(p1, farP1Inter, xLeft, xRight, yDown, yUp)
+        farP2Inter = findInter(farP1Inter, p1, xLeft, xRight, yDown, yUp)
+
+    print('p1 = ', p1)
+    print('f1 = ', farP1Inter, '\n')
+    print('p2 = ', p2)
+    print('f2 = ', farP2Inter, '\n')
 
     if canva:
         p1 = Pixel(x=farP1Inter[0], y=farP1Inter[1], color='red')
@@ -121,11 +126,6 @@ def cutBase(segmentPol, clipperPol, canva=None):
 
         p2 = Pixel(x=farP2Inter[0], y=farP2Inter[1], color='red')
         p2.showLikePoint(canva)
-
-    print('p1 = ', p1)
-    print('f1 = ', farP1Inter, '\n')
-    print('p2 = ', p2)
-    print('f2 = ', farP2Inter, '\n')
 
     return [farP1Inter, farP2Inter]
 
