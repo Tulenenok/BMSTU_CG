@@ -37,10 +37,6 @@ class CanvasPolLine:
     def changeStartPixel(self, newX, newY, color, showComments=False):
         self.startPixel = Pixel(x=newX, y=newY, color=color, showComments=showComments)
 
-    def findFieldLines(self, field):
-        for l in self.lines:
-            l.findFieldLine(field)
-
     def updatePixels(self, field, cutPixels=[]):
         setCutPixels = set()
         for p in cutPixels:
@@ -58,6 +54,7 @@ class CanvasPolLine:
     def show(self, field):
         if not self.WasGo:
             for p in self.points:
+                print('show = ', id(p))
                 p.show(field)
 
         self.updateLines()
@@ -67,6 +64,8 @@ class CanvasPolLine:
                 l.show(field)
             else:
                 l.showLikeClipper(field)
+                for p in self.points:
+                    p.changeR(field)
 
     def updateWasGoFlag(self, newValue):
         self.WasGo = newValue
@@ -84,6 +83,7 @@ class CanvasPolLine:
 
     def hide(self, field):
         for p in self.points:
+            print('hide =', id(p))
             p.hide(field)
 
         for l in self.lines:
@@ -193,12 +193,3 @@ class CanvasPolLine:
         for point in self.points:
             point.scale(x, y, kx, ky)
         self.updateLines()
-
-    # Проверка, является ли полигон выпуклым
-    def isConvexPolygon(self):
-        # self.updateLines()
-        for i, line in enumerate(self.lines):
-            for j, segment in enumerate(self.lines):
-                if j != (i - 1) % len(self.lines) and j != i and j != (i + 1) % len(self.lines) and line.isInter(segment):
-                    return False
-        return True

@@ -12,8 +12,8 @@ def main():
     root.geometry('850x650')
     root['bg'] = Settings.COLOR_MAIN_BG
 
-    root.iconphoto(True, PhotoImage(file=r'shared/a3.png'))
-    root.title('Лабораторная работа №8')
+    root.iconphoto(True, PhotoImage(file=r'shared/a1.png'))
+    root.title('Лабораторная работа №7')
 
     c = WrapCanva(root, Canva=PolygonField, highlightthickness=0)
     menu = menuFrame(root)
@@ -30,7 +30,7 @@ def main():
     upBtns = UpButtons(root, c)
     upBtns.show()
 
-    fg = '#1b310d'
+    fg = '#3a4863'#'#003539'     # '#0b384b'
     addSegmentForm = XYForm(root, Settings.COLOR_MAIN_BG, 'Add point', Settings.WIDTH_INPUT,
                        lambda: addPointKey(c, addSegmentForm), '  Add  ', fg=fg)
     delSegmentForm = XYForm(root, Settings.COLOR_MAIN_BG, 'Del point', Settings.WIDTH_INPUT,
@@ -42,10 +42,10 @@ def main():
     var = IntVar()
     var.set(0)
     Radiobutton(text="Segment", variable=var, value=0,
-                command=lambda: drSeg(c), bg=Settings.COLOR_MAIN_BG).place(
+                command=lambda: c.canva.drawSegment(), bg=Settings.COLOR_MAIN_BG).place(
         x=Settings.X_INPUT - 5, y=Settings.Y_INPUT)
     Radiobutton(text="Clipper", variable=var, value=1,
-                command=lambda: drClip(c), bg=Settings.COLOR_MAIN_BG).place(
+                command=lambda: c.canva.drawClipper(), bg=Settings.COLOR_MAIN_BG).place(
         x=Settings.X_INPUT + 85, y=Settings.Y_INPUT)
 
     selectMethod(root, c)
@@ -53,14 +53,55 @@ def main():
     root.mainloop()
 
 
-def drSeg(c):
-    c.canva.drawSegment()
-    # c.changeColorRandom()
-
-def drClip(c):
-    c.canva.drawClipper()
-    # c.changeColorRandom()
-
-
 if __name__ == "__main__":
     main()
+#
+#
+# # from tkinter import *
+# # from PIL import ImageTk
+# # from view.CanvasField import *
+# #
+# # root = Tk()
+# # root.geometry('850x650')
+# # root['bg'] = 'yellow'
+# # f = WrapCanva(root, width=200, height=200, highlightthickness=0)
+# # f.show(Settings.X_CANVA, Settings.Y_CANVA, Settings.REL_X_CANVA, Settings.REL_Y_CANVA)
+# # image = ImageTk.PhotoImage(file = r"C:\projects\Сomputer graphics\lab_02\shared\rootIcon.png")
+# # f.canva.create_line(10, 10, 100, 100)
+# # f.canva.create_image(10, 10, image = image, anchor = NW)
+# # f = Frame(root, width=200, height=200)
+# # canvas = CartesianField(root, f, width=200, height=200, bg='blue')
+# # canvas.place(x=0, y=0, relwidth=1)
+# #
+# # image = ImageTk.PhotoImage(file = r"C:\projects\Сomputer graphics\lab_02\shared\rootIcon.png")
+# # canvas.create_image(10, 10, image = image, anchor = NW)
+# # canvas.create_line(10, 10, 100, 100)
+# # f.place(x=0, y=0, relwidth=0.7)
+#
+# # mainloop()
+#
+# # Очерк по политической культуре России
+
+# from tkinter import *
+# root = Tk()
+# screen = Canvas(root)
+# screen.pack()
+# i=[]
+# a=0
+# colors = ['#f0f0f0', "green","blue",'black',"white","red","green","blue",'black',"white"]
+# for j in colors:
+#     a += 10
+#     i.append(screen.create_rectangle((10+a, 10+a, 30+a, 30+a), fill=j))
+#
+# def onmotion(event): # самое интересное
+#     x = event.x
+#     y = event.y
+#     # x = root.winfo_pointerx()-root.winfo_x() # получаем координаты курсора относительно окна
+#     # y = root.winfo_pointery()-root.winfo_y() #
+#     a = screen.find_overlapping(x+0.5,y-0.5,x+0.5,y+0.5)
+#     print(a, x, y)                 # выводим, какую фигуру(-ы) накрывает квадрат 1х1 пиксель
+#     print(screen.itemcget([a[-1]], "fill" ) ) # выводим цвет самой верхней фигуры
+#
+# screen.bind("<Button-1>",onmotion) #привязываем к клику лкм функцию
+#
+# root.mainloop() # запускаемся
