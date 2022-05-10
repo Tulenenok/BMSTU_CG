@@ -821,8 +821,7 @@ class WrapCanva:
                 return
 
         self.canva.colorNowPol = color
-        if self.canva.inputPol:
-            self.canva.polygons[-1].changeColor(color, color)
+        self.canva.polygons[-1].changeColor(color, color)
 
         self.canva.myUpdate()
         self.canva.save()
