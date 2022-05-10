@@ -54,6 +54,7 @@ class CanvasPolLine:
     def show(self, field):
         if not self.WasGo:
             for p in self.points:
+                print('show = ', id(p))
                 p.show(field)
 
         self.updateLines()
@@ -82,6 +83,7 @@ class CanvasPolLine:
 
     def hide(self, field):
         for p in self.points:
+            print('hide =', id(p))
             p.hide(field)
 
         for l in self.lines:

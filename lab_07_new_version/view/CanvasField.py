@@ -437,6 +437,10 @@ class PolygonField(CartesianField):
         self.countSegments = 0
         self.countClippers = 0
 
+        self.showPromptSegment = False
+        self.binds = []
+        self.promptLine = None
+
     def click(self, event):
         self.showPoint(int(self.XShiftCP(event.x)), int(self.YShiftCP(event.y)), self.polygons[-1].colorLine)
         # if self.inputPol:
@@ -452,12 +456,88 @@ class PolygonField(CartesianField):
         #     self.config(cursor="@pencil1.cur")
         self.save()
 
+    def shiftClick(self, event):
+        if self.promptLine:
+            self.delete(self.promptLine)
+
+        startX = self.polygons[-1].points[-1].x
+        startY = self.polygons[-1].points[-1].y
+        endX = self.XShiftCP(event.x)
+        endY = self.YShiftCP(event.y)
+
+        diffX = abs(endX - startX)
+        diffY = abs(endY - startY)
+
+        if diffX < diffY:
+            endX = startX
+        else:
+            endY = startY
+
+        self.showPoint(int(endX), int(endY), self.polygons[-1].colorLine)
+        self.save()
+
+
     def showPoint(self, x, y, color=Settings.COLOR_NEW_POINT):
         point = CanvasPoint(float(x), float(y), showComments=self.ShowComments, color=self.colorNowPol)
         self.polygons[-1].addPoint(self, point)
 
         if len(self.polygons[-1].points) > 1:
             self.startNewPolygon('hluuh')
+
+        self.showPromptSegment = not self.showPromptSegment
+        if self.showPromptSegment:
+            self.createBinds()
+        else:
+            self.delBinds()
+
+    def createBinds(self):
+        self.binds.append(self.bind("<Motion>", lambda event: self.createPromptLine(event)))
+        self.binds.append(self.bind("<Shift-Motion>", lambda event: self.createPerpendicularPromptLine(event)))
+        self.binds.append(self.bind("<Shift-Button-1>", lambda event: self.shiftClick(event)))
+
+    def delBinds(self):
+        if self.promptLine:
+            self.delete(self.promptLine)
+
+        self.unbind("<Motion>", self.binds[0])
+        self.unbind("<Shift-Motion>", self.binds[1])
+        self.unbind(self.bind("<Shift-Button-1>", self.binds[2]))
+        self.binds = []
+
+    def createPromptLine(self, event):
+        if self.promptLine:
+            self.delete(self.promptLine)
+
+        if self.segmentOrClipper:
+            self.promptLine = self.create_line(event.x, event.y, self.XShiftPC(self.polygons[-1].points[-1].x), self.YShiftPC(self.polygons[-1].points[-1].y), fill=self.colorNowPol)
+
+        else:
+            self.promptLine = self.create_rectangle(event.x, event.y, self.XShiftPC(self.polygons[-1].points[-1].x),
+                                               self.YShiftPC(self.polygons[-1].points[-1].y), outline=self.colorNowPol, width=2)
+
+    def createPerpendicularPromptLine(self, event):
+        if self.promptLine:
+            self.delete(self.promptLine)
+
+        startX = self.XShiftPC(self.polygons[-1].points[-1].x)
+        startY = self.YShiftPC(self.polygons[-1].points[-1].y)
+        endX = event.x
+        endY = event.y
+
+        diffX = abs(endX - startX)
+        diffY = abs(endY - startY)
+
+        if diffX < diffY:
+            endX = startX
+        else:
+            endY = startY
+
+        if self.segmentOrClipper:
+            self.promptLine = self.create_line(startX, startY, endX, endY, fill=self.colorNowPol)
+
+        else:
+            self.promptLine = self.create_rectangle(event.x, event.y, startX, startY,
+                                                    outline=self.colorNowPol, width=2)
 
 
     def drawSegment(self):
