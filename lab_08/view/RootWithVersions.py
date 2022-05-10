@@ -75,7 +75,8 @@ class RootWithVersions(Tk):
                     if rc != 0:
                         showinfo('Error', 'Не сегодня')
                 except:
-                    showinfo('Error', 'Просим простить великодушно, эта функция работает только по четвергам')
+                    pass
+                    # showinfo('Error', 'Просим простить великодушно, эта функция работает только по четвергам')
         except FileNotFoundError:
             print('Файл для считывания данных не найден')
 

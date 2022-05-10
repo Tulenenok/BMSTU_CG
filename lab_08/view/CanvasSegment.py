@@ -89,12 +89,11 @@ class CanvasSegment(Line):
     def findFieldLine(self, field):
         self.coordShift(field)
         self.fieldLine = Line(CanvasPoint(self.xStart, self.yStart), CanvasPoint(self.xEnd, self.yEnd))
-        self.pixSet = dda_line(self.xStart, self.yStart, self.xEnd, self.yEnd)
 
     def showLikeClipper(self, field):
         self.coordShift(field)
 
-        self.rec = field.create_rectangle(self.xStart, self.yStart, self.xEnd, self.yEnd, outline=self.color, width=2)
+        self.rec = field.create_line(self.xStart, self.yStart, self.xEnd, self.yEnd, fill=self.color, width=2)
 
 
     def hide(self, field):
@@ -111,3 +110,12 @@ class CanvasSegment(Line):
     def reShow(self, field):
         self.hide(field)
         self.show(field)
+
+    def isInter(self, segment):
+        firstSign = self.A * segment.start.x + self.B * segment.start.y + self.C
+        secondSign = self.A * segment.end.x + self.B * segment.end.y + self.C
+
+        if firstSign * secondSign <= 0:
+            return True
+
+        return False

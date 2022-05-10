@@ -1,8 +1,8 @@
 class Settings:
     COLOR_NEW_POINT = '#8eb2ac'                   # лазурный
-    COLOR_MAIN_BG = '#ddc8b3'      #'#7c7b89'                     # светло серый
-    COLOR_HOVER_BTN =  '#dedee6'#'#deebf1'                   # светло синий
-    COLOR_BTN = '#d2e7e8'#'#d2e7e8'          #'#f1e4de'                         # почти белый
+    COLOR_MAIN_BG = '#4ba186'      #'#7c7b89'                     # светло серый
+    COLOR_HOVER_BTN =  '#9be1a3'#'#deebf1'                   # светло синий
+    COLOR_BTN = '#b3decb'#'#d2e7e8'          #'#f1e4de'                         # почти белый
     COLOR_POINT_FIRST_SET = '#530fad'             # фиолетовый
     COLOR_POINT_SECOND_SET = '#e40045'            # малиновый
 

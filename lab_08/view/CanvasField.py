@@ -438,27 +438,17 @@ class PolygonField(CartesianField):
         self.countClippers = 0
 
         self.showPromptSegment = False
-        self.binds = []
         self.promptLine = None
+        self.binds = []
 
     def click(self, event):
         self.showPoint(int(self.XShiftCP(event.x)), int(self.YShiftCP(event.y)), self.polygons[-1].colorLine)
-        # if self.inputPol:
-        #     self.showPoint(int(self.XShiftCP(event.x)), int(self.YShiftCP(event.y)), self.polygons[-1].colorLine)
-        # else:
-        #     self.polygons[-1].fillFlag = True
-        #     self.polygons[-1].changeStartPixel(int(event.x), int(event.y),
-        #                                        color=self.colorNowPol, showComments=self.ShowComments)
-        #     self.polygons[-1].reShow(self)
-        #     self.startNewPolygon(event)
-        #     self.inputPol = True
-        #
-        #     self.config(cursor="@pencil1.cur")
         self.save()
 
     def shiftClick(self, event):
         if self.promptLine:
             self.delete(self.promptLine)
+            self.update()
 
         startX = self.polygons[-1].points[-1].x
         startY = self.polygons[-1].points[-1].y
@@ -476,19 +466,17 @@ class PolygonField(CartesianField):
         self.showPoint(int(endX), int(endY), self.polygons[-1].colorLine)
         self.save()
 
-
     def showPoint(self, x, y, color=Settings.COLOR_NEW_POINT):
         point = CanvasPoint(float(x), float(y), showComments=self.ShowComments, color=self.colorNowPol)
         self.polygons[-1].addPoint(self, point)
 
-        if len(self.polygons[-1].points) > 1:
+        if not self.showPromptSegment:
+            self.createBinds()
+            self.showPromptSegment = True
+
+        if self.polygons[-1].segmentOrClipper and len(self.polygons[-1].points) > 1:
             self.startNewPolygon('hluuh')
 
-        self.showPromptSegment = not self.showPromptSegment
-        if self.showPromptSegment:
-            self.createBinds()
-        else:
-            self.delBinds()
 
     def createBinds(self):
         self.binds.append(self.bind("<Motion>", lambda event: self.createPromptLine(event)))
@@ -508,12 +496,8 @@ class PolygonField(CartesianField):
         if self.promptLine:
             self.delete(self.promptLine)
 
-        if self.segmentOrClipper:
-            self.promptLine = self.create_line(event.x, event.y, self.XShiftPC(self.polygons[-1].points[-1].x), self.YShiftPC(self.polygons[-1].points[-1].y), fill=self.colorNowPol)
-
-        else:
-            self.promptLine = self.create_rectangle(event.x, event.y, self.XShiftPC(self.polygons[-1].points[-1].x),
-                                               self.YShiftPC(self.polygons[-1].points[-1].y), outline=self.colorNowPol, width=2)
+        self.promptLine = self.create_line(event.x, event.y, self.XShiftPC(self.polygons[-1].points[-1].x),
+                                           self.YShiftPC(self.polygons[-1].points[-1].y), fill=self.colorNowPol)
 
     def createPerpendicularPromptLine(self, event):
         if self.promptLine:
@@ -532,12 +516,7 @@ class PolygonField(CartesianField):
         else:
             endY = startY
 
-        if self.segmentOrClipper:
-            self.promptLine = self.create_line(startX, startY, endX, endY, fill=self.colorNowPol)
-
-        else:
-            self.promptLine = self.create_rectangle(event.x, event.y, startX, startY,
-                                                    outline=self.colorNowPol, width=2)
+        self.promptLine = self.create_line(startX, startY, endX, endY, fill=self.colorNowPol)
 
 
     def drawSegment(self):
@@ -634,19 +613,32 @@ class PolygonField(CartesianField):
         self.save()
 
     def startNewPolygon(self, event):
+        if self.showPromptSegment:
+            self.delBinds()
+
         self.polygons.append(CanvasPolLine([], color=self.colorNowPol, segmentOrClipper=self.segmentOrClipper,
                                            InOrOut=self.InOrOut, diffColors=self.diffColors))
         self.myUpdate()
+
+        self.showPromptSegment = False
 
 
     def startNewPolygonClose(self, event):
         try:
             lastPoint = CanvasPoint(self.polygons[-1].points[0].x, self.polygons[-1].points[0].y, color=self.colorNowPol)
             self.polygons[-1].addPoint(self, lastPoint)
+
         except:
             pass
-        self.config(cursor="@fill1.cur")
+
+        if not self.polygons[-1].isConvexPolygon():
+            showinfo("Warning", "Полигон не выпуклый\n\n(так что удалим-ка его от греха подальше)")
+            self.polygons[-1].hide(self)
+            self.polygons.pop()
+
+
         self.inputPol = False
+        self.startNewPolygon('fb')
 
     def updatePoints(self):
         self.points = []
@@ -821,8 +813,7 @@ class WrapCanva:
                 return
 
         self.canva.colorNowPol = color
-        if self.canva.inputPol:
-            self.canva.polygons[-1].changeColor(color, color)
+        self.canva.polygons[-1].changeColor(color, color)
 
         self.canva.myUpdate()
         self.canva.save()

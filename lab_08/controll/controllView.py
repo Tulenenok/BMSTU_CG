@@ -9,7 +9,7 @@ from view.keyInput import *
 from tkinter import ttk
 
 from model.Tools import Tools
-from model.clipperAlg import cut
+from model.randomClipperAlg import randomCut
 
 import controll.controllModel
 
@@ -151,18 +151,26 @@ def goCut(root, c):
     segments = []
 
     for i in canva.polygons:
-        if i.segmentOrClipper:
-            if len(i.points) == 2:
-                segments.append(i)
-        else:
+        if i.segmentOrClipper and len(i.points) == 2:
+            segments.append(i)
+
+        if not i.segmentOrClipper and len(i.points) > 2:
             clippers.append(i)
+
+    print(len(segments))
+    print(len(clippers))
+    print(len(canva.polygons))
 
     for s in segments:
         s.cutArea = []
+
+        for c in clippers:
+            c.findFieldLines(canva)
+
         for c in clippers:
             # SE -- [(x, y), (x, y)]
-            SE = cut(s, c)
-            print(SE)
+            SE = randomCut(s, c)
+            print('SE = ', SE)
             if SE != 'error':
                 if len(SE) == 0:
                     s.cutArea.append( () )

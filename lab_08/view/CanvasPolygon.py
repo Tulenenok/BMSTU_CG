@@ -37,6 +37,10 @@ class CanvasPolLine:
     def changeStartPixel(self, newX, newY, color, showComments=False):
         self.startPixel = Pixel(x=newX, y=newY, color=color, showComments=showComments)
 
+    def findFieldLines(self, field):
+        for l in self.lines:
+            l.findFieldLine(field)
+
     def updatePixels(self, field, cutPixels=[]):
         setCutPixels = set()
         for p in cutPixels:
@@ -54,7 +58,6 @@ class CanvasPolLine:
     def show(self, field):
         if not self.WasGo:
             for p in self.points:
-                print('show = ', id(p))
                 p.show(field)
 
         self.updateLines()
@@ -64,8 +67,6 @@ class CanvasPolLine:
                 l.show(field)
             else:
                 l.showLikeClipper(field)
-                for p in self.points:
-                    p.changeR(field)
 
     def updateWasGoFlag(self, newValue):
         self.WasGo = newValue
@@ -83,7 +84,6 @@ class CanvasPolLine:
 
     def hide(self, field):
         for p in self.points:
-            print('hide =', id(p))
             p.hide(field)
 
         for l in self.lines:
@@ -93,7 +93,7 @@ class CanvasPolLine:
 
     def addPoint(self, field, newPoint):
         if len(self.points) > 0:
-            self.lines.append(CanvasSegment(self.points[-1], newPoint, self.colorLine))
+            self.lines.append(CanvasSegment(self.points[-1], newPoint, self.colorPoints))
 
         self.points.append(newPoint)
         self.reShow(field)
@@ -144,9 +144,9 @@ class CanvasPolLine:
         self.lines.clear()
         for i in range(len(self.points) - 1):
             if not self.segmentOrClipper:
-                self.lines.append(CanvasSegment(self.points[i], self.points[i + 1], self.colorLine, dash=(50, 1)))
+                self.lines.append(CanvasSegment(self.points[i], self.points[i + 1], self.colorPoints, dash=(50, 1)))
             else:
-                self.lines.append(CanvasSegment(self.points[i], self.points[i + 1], self.colorLine, WasGo=self.WasGo,
+                self.lines.append(CanvasSegment(self.points[i], self.points[i + 1], self.colorPoints, WasGo=self.WasGo,
                                                 cutArea=self.cutArea, InOrOut=self.InOrOut, diffColors=self.diffColors))
 
     def isPointOn(self, field, X, Y):
@@ -176,8 +176,8 @@ class CanvasPolLine:
         for point in self.points:
             point.color = self.colorPoints
 
-        for pix in self.pixels:
-            pix.color = self.colorPoints
+        for line in self.lines:
+            line.color = self.colorPoints
 
     def rotatePol(self, pointCenter, alpha):
         for point in self.points:
@@ -193,3 +193,12 @@ class CanvasPolLine:
         for point in self.points:
             point.scale(x, y, kx, ky)
         self.updateLines()
+
+    # Проверка, является ли полигон выпуклым
+    def isConvexPolygon(self):
+        # self.updateLines()
+        for i, line in enumerate(self.lines):
+            for j, segment in enumerate(self.lines):
+                if j != (i - 1) % len(self.lines) and j != i and j != (i + 1) % len(self.lines) and line.isInter(segment):
+                    return False
+        return True
