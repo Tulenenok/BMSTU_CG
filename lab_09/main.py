@@ -12,7 +12,7 @@ def main():
     root.geometry('850x650')
     root['bg'] = Settings.COLOR_MAIN_BG
 
-    root.iconphoto(True, PhotoImage(file=r'shared/a3.png'))
+    root.iconphoto(True, PhotoImage(file=r'shared/a4.png'))
     root.title('Лабораторная работа №9')
 
     c = WrapCanva(root, Canva=PolygonField, highlightthickness=0)
@@ -30,7 +30,7 @@ def main():
     upBtns = UpButtons(root, c)
     upBtns.show()
 
-    fg = '#1b310d'
+    fg = '#1e1614'
     addSegmentForm = XYForm(root, Settings.COLOR_MAIN_BG, 'Add point', Settings.WIDTH_INPUT,
                        lambda: addPointKey(c, addSegmentForm), '  Add  ', fg=fg)
     delSegmentForm = XYForm(root, Settings.COLOR_MAIN_BG, 'Del point', Settings.WIDTH_INPUT,
@@ -41,7 +41,7 @@ def main():
 
     var = IntVar()
     var.set(0)
-    Radiobutton(text="Segment", variable=var, value=0,
+    Radiobutton(text="Polygon", variable=var, value=0,
                 command=lambda: drSeg(c), bg=Settings.COLOR_MAIN_BG).place(
         x=Settings.X_INPUT - 5, y=Settings.Y_INPUT)
     Radiobutton(text="Clipper", variable=var, value=1,
