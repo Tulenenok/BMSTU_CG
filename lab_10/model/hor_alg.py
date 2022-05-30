@@ -227,7 +227,8 @@ def draw_horizon_limits():
     x_limits = globalParam.xLimits
     z_limits = globalParam.zLimits
 
-    for z in arange(z_limits[FROM], z_limits[TO] + z_limits[STEP], z_limits[STEP]):
+    # for z in arange(z_limits[FROM], z_limits[TO] + z_limits[STEP], z_limits[STEP]):
+    for z in arange(z_limits[FROM], z_limits[TO], z_limits[STEP]):
         dot1 = trans_dot([x_limits[FROM], find_y(x_limits[FROM], z), z])
         dot2 = trans_dot([x_limits[FROM], find_y(x_limits[FROM], z + x_limits[STEP]), z + x_limits[STEP]])
 

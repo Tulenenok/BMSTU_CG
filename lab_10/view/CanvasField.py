@@ -495,7 +495,7 @@ class PolygonField(CartesianField):
         self.binds = []
 
         self.func = None
-        self.saveFunc = ["sin(x) * sin(z)", "cos(x) * cos(sin(z))"]
+        self.saveFunc = ["cos(x) * z / 3", "sin(x) * sin(z)", "cos(x) * cos(sin(z))"]
 
         self.funcKey = None
         self.XKey = None
@@ -505,7 +505,7 @@ class PolygonField(CartesianField):
         self.zLimits = []
 
         self.notLoad = False
-
+        self.isNewFunc = True
 
     def updateParams(self):
         XLimitsForm = self.XKey
@@ -534,6 +534,9 @@ class PolygonField(CartesianField):
 
         # self.xLimits = [self.XShiftPC(el) for el in XresultCheck[1]]
         # self.zLimits = [self.YShiftPC(el) for el in ZresultCheck[1]]
+        if self.func != funcCheck[1]:
+            self.isNewFunc = True
+
         self.func = funcCheck[1]
 
         print(self.xLimits)
@@ -627,11 +630,17 @@ class PolygonField(CartesianField):
         self.clear()
         self.addSaveFunc(self.func)
 
-        build_graph(True)
+        build_graph(self.isNewFunc)
+        self.isNewFunc = False
+
+        self.needRebuild = False
+        self.notLoad = True
 
     def myUpdate(self):
         super(PolygonField, self).myUpdate()
 
+        print(self.needRebuild)
+        print(self.notLoad)
         if self.needRebuild and self.notLoad:
             self.build()
             self.needRebuild = False

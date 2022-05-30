@@ -25,8 +25,6 @@ class menuFrame:
 
         submenu = Menu(self.settingMenu, tearoff=False)
         submenu.add_command(label="Функция", command=field.changeColorNewPol)
-        submenu.add_command(label="Отсекатель", command=field.changeColorDelObl)
-        submenu.add_command(label="Результат", command=field.changeColorDel)
 
         self.settingMenu.add_command(label=self.name, command=self.__showComment)
         self.settingMenu.add_command(label=self.gridName, command=self.__showGrid)

@@ -77,7 +77,7 @@ def main():
 
 
 
-    cb = ttk.Combobox(root, values=["sin(x) * sin(z)"], font=("Arial", 10),
+    cb = ttk.Combobox(root, values=[c.canva.saveFunc[0]], font=("Arial", 10),
                       postcommand=lambda: cb.configure(values=c.canva.saveFunc))
     root.option_add('*TCombobox*Listbox.font', ("Arial", 10))
     cb.place(relx=0.742, y=Settings.Y_INPUT + 34)
