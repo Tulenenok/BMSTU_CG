@@ -495,7 +495,7 @@ class PolygonField(CartesianField):
         self.binds = []
 
         self.func = None
-        self.saveFunc = ["sin(x) * sin(z)"]
+        self.saveFunc = ["sin(x) * sin(z)", "cos(x) * cos(sin(z))"]
 
         self.funcKey = None
         self.XKey = None
@@ -737,9 +737,20 @@ class PolygonField(CartesianField):
         self.myUpdate()
         return wasDel
 
-    def rotate(self, pointerCenter, alpha):
-        self.myUpdate()
-        self.save()
+    def rotate(self, XForm, ax):
+        angle = XForm.getXY()
+        if not Tools.isFloat(angle):
+            showinfo("Error", "Неверно задан угол [float]")
+
+        self.clear()
+        if ax == "x":
+            spin_x(float(angle))
+        if ax == "y":
+            spin_y(float(angle))
+        if ax == "z":
+            spin_z(float(angle))
+
+        # self.save()
 
     def shift(self, xShift, yShift):
         for pol in self.polygons:
@@ -758,10 +769,21 @@ class PolygonField(CartesianField):
         self.save()
 
     def mouseRotate(self, mode):
-        if mode == 'r':
-            self.rotate(self.rotatePoint, -15)
-        elif mode == 'l':
-            self.rotate(self.rotatePoint, 15)
+        pass
+        # if mode == 'r':
+        #     self.rotate(self.rotatePoint, -15)
+        # elif mode == 'l':
+        #     self.rotate(self.rotatePoint, 15)
+
+
+    def mouseZoom(self, event):
+        super(PolygonField, self).mouseZoom(event)
+        if event.delta > 0:
+            globalParam.scale += 1
+        if event.delta < 0:
+            globalParam.scale -= 1
+
+        self.build()
 
 
 class WrapCanva:
@@ -770,6 +792,7 @@ class WrapCanva:
 
         self.frame = Frame(window)
         self.canva = Canva(self.frame, self.window, showArrows=False, **kwargs)
+        self.canva.config(bg='white')
         self.frame.bind('<Configure>', self.resize, '+')
         self.canva.place(x=0, y=0)
 
@@ -875,10 +898,6 @@ class WrapCanva:
                 return
 
         self.canva.colorNowPol = color
-        self.canva.polygons[-1].changeColor(color, color)
-
-        self.canva.myUpdate()
-        self.canva.save()
 
     def changeColorRandom(self):
         newColor = Tools.rgb_to_hex(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))

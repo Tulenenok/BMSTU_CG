@@ -13,7 +13,7 @@ def main():
     root.geometry('850x650')
     root['bg'] = Settings.COLOR_MAIN_BG
 
-    root.iconphoto(True, PhotoImage(file=r'shared/a4.png'))
+    root.iconphoto(True, PhotoImage(file=r'shared/a5.png'))
     root.title('Лабораторная работа №10')
 
     c = WrapCanva(root, Canva=PolygonField, highlightthickness=0)
@@ -32,13 +32,13 @@ def main():
     upBtns = UpButtons(root, c)
     upBtns.show()
 
-    fg = '#1e1614'
+    fg = '#154e79'
     XLimitsForm = XYXForm(root, Settings.COLOR_MAIN_BG, 'Limits X', Settings.WIDTH_INPUT - 1,
                           lambda: checkLimits(XLimitsForm), '  Save  ', fg=fg, showButton=False)
 
     XLimitsForm.show(Settings.COLOR_MAIN_BG, Settings.X_INPUT, Settings.Y_INPUT + 2)
 
-    XLimitsForm.insertXY(-10, 10, 0.1)
+    XLimitsForm.insertXY(-10, 10, 0.2)
 
     ZLimitsForm = XYXForm(root, Settings.COLOR_MAIN_BG, 'Limits Z', Settings.WIDTH_INPUT - 1,
                           lambda: checkLimits(ZLimitsForm), '  Save  ', fg=fg, showButton=False)
@@ -55,12 +55,12 @@ def main():
     # rotateForm.insertXY(0, 0, 0)
 
     XRotateForm = XForm(root, Settings.COLOR_MAIN_BG, 'Rotate', Settings.WIDTH_INPUT - 1,
-                          lambda: checkLimits(ZLimitsForm), '  Go  ', fg=fg, showButton=True, fields="OX:    ")
+                          lambda: c.canva.rotate(XRotateForm, "x"), '  Go  ', fg=fg, showButton=True, fields="OX:    ")
     YRotateForm = XForm(root, Settings.COLOR_MAIN_BG, 'Rotate', Settings.WIDTH_INPUT - 1,
-                        lambda: checkLimits(ZLimitsForm), '  Go  ', fg=fg, showButton=True,
+                        lambda: c.canva.rotate(YRotateForm, "y"), '  Go  ', fg=fg, showButton=True,
                         fields="OY:    ")
     ZRotateForm = XForm(root, Settings.COLOR_MAIN_BG, 'Rotate', Settings.WIDTH_INPUT - 1,
-                        lambda: checkLimits(ZLimitsForm), '  Go  ', fg=fg, showButton=True,
+                        lambda: c.canva.rotate(ZRotateForm, "z"), '  Go  ', fg=fg, showButton=True,
                         fields="OZ:    ")
 
     XRotateForm.show(Settings.COLOR_MAIN_BG, Settings.X_INPUT, Settings.Y_INPUT + w1 * 2)

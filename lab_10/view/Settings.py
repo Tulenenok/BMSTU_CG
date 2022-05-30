@@ -1,14 +1,14 @@
 class Settings:
     COLOR_NEW_POINT = '#8eb2ac'                   # лазурный
-    COLOR_MAIN_BG = '#ddd0ca'      #'#7c7b89'                     # светло серый
-    COLOR_HOVER_BTN =  '#f3eee8'#'#deebf1'                   # светло синий
-    COLOR_BTN = '#afa3a3'#'#9f8b82'#'#d2e7e8'          #'#f1e4de'                         # почти белый
+    COLOR_MAIN_BG = '#c2dfff'      #'#7c7b89'                     # светло серый
+    COLOR_HOVER_BTN =  '#a9b4c8'#'#deebf1'                   # светло синий
+    COLOR_BTN = '#e6f7fe'#'#9f8b82'#'#d2e7e8'          #'#f1e4de'                         # почти белый
     COLOR_POINT_FIRST_SET = '#530fad'             # фиолетовый
     COLOR_POINT_SECOND_SET = '#e40045'            # малиновый
 
 
-    COLOR_LINE = '#3b91a8'
-    COLOR_CANVA = '#f0f0f0'
+    COLOR_LINE = 'blue'#'#3b91a8'
+    COLOR_CANVA = 'white'
 
     COLOR_DEL = 'orange'
 
@@ -16,7 +16,7 @@ class Settings:
     COLOR_LOC_LINE = '#976bd6'
 
     COLOR_NEW_CLIPPER = 'magenta'
-    COLOR_IN_SEGMENT = '#ff6d25'
+    COLOR_IN_SEGMENT = 'blue'
 
     X_CANVA = 200
     Y_CANVA = 85

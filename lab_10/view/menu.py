@@ -24,13 +24,13 @@ class menuFrame:
         self.settingMenu = Menu(self.menu, tearoff=0)
 
         submenu = Menu(self.settingMenu, tearoff=False)
-        submenu.add_command(label="Многоугольник", command=field.changeColorNewPol)
+        submenu.add_command(label="Функция", command=field.changeColorNewPol)
         submenu.add_command(label="Отсекатель", command=field.changeColorDelObl)
         submenu.add_command(label="Результат", command=field.changeColorDel)
 
         self.settingMenu.add_command(label=self.name, command=self.__showComment)
         self.settingMenu.add_command(label=self.gridName, command=self.__showGrid)
-        # self.settingMenu.add_cascade(label="Изменить цвет", menu=submenu)
+        self.settingMenu.add_cascade(label="Изменить цвет", menu=submenu)
 
         self.menu.add_cascade(label='File', menu=self.__makeDropDown({
                                                                       'Отменить ⏎': lambda: funcReturn(),
@@ -58,5 +58,5 @@ class menuFrame:
         showinfo('Info', 'Автор: Гурова Наталия ИУ7-44Б')
 
     def __info_programm(self):
-        showinfo('Info', 'Программа была создана 25.05 в 3:12 (но это не точно)\nАлгоритм Сазерленда Ходжмена.\n\n'
-                         'Краткая справка: чтобы замкнуть отсекатель пригодится ctrl+space')
+        showinfo('Info', '\nАлгоритм плавающего горизонта.\n\n'
+                         'Краткая справка: чтобы получить новый рандомный цвет пригодится ctrl+N')

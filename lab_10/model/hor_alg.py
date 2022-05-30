@@ -44,7 +44,7 @@ class globalParam:
     c_height = None
     color = None
 
-    scale = 25
+    scale = 30
     xLimits = []
     zLimits = []
 
@@ -70,49 +70,23 @@ class globalParam:
 
         globalParam.xLimits = globalParam.canva.xLimits
         globalParam.zLimits = globalParam.canva.zLimits
-    # def __init__(self, canva):
-    #     self.canva = canva
-    #
-    #     self.c_width = None
-    #     self.c_height = None
-    #     self.color = None
-    #
-    #     self.scale = 45
-    #     self.xLimits = []
-    #     self.zLimits = []
-    #
-    #     self.func = None
-    #
-    #     self.trans_matrix = []
-
-    # def updateParams(self):
-    #     self.c_width = self.canva.winfo_width()
-    #     self.c_height = self.canva.winfo_height()
-    #     self.color = self.canva.colorNowPol()
-    #
-    #     self.func = self.canva.func
-    #
-    #     self.xLimits = self.canva.xLimits()
-    #     self.zLimits = self.canva.zLimits()
 
 
-def rotate_matrix(matrix, trans_matrix):
+def rotate_matrix(matrix):
     res_matrix = [[0 for i in range(4)] for j in range(4)]
 
     for i in range(4):
         for j in range(4):
             for k in range(4):
-                res_matrix[i][j] += trans_matrix[i][k] * matrix[k][j]
+                res_matrix[i][j] += globalParam.trans_matrix[i][k] * matrix[k][j]
 
-    trans_matrix = res_matrix
-
-    return trans_matrix
+    globalParam.trans_matrix = res_matrix
 
 
 # угол должен подходить под float(angle) / 180 * pi
-def spin_x(angle, trans_matrix):
+def spin_x(angle):
     angle = angle / 180 * pi
-    if len(trans_matrix) == 0:
+    if len(globalParam.trans_matrix) == 0:
         print("Ошибка", "График не задан")
         return
 
@@ -121,14 +95,14 @@ def spin_x(angle, trans_matrix):
                        [0, -sin(angle), cos(angle), 0],
                        [0, 0, 0, 1]]
 
-    rotate_matrix(rotating_matrix, trans_matrix)
+    rotate_matrix(rotating_matrix)
 
     build_graph()
 
 
-def spin_y(angle, trans_matrix):
+def spin_y(angle):
     angle = angle / 180 * pi
-    if len(trans_matrix) == 0:
+    if len(globalParam.trans_matrix) == 0:
         print("Ошибка", "График не задан")
         return
 
@@ -137,14 +111,14 @@ def spin_y(angle, trans_matrix):
                        [sin(angle), 0, cos(angle), 0],
                        [0, 0, 0, 1]]
 
-    rotate_matrix(rotating_matrix, trans_matrix)
+    rotate_matrix(rotating_matrix)
 
     build_graph()
 
 
-def spin_z(angle, trans_matrix):
+def spin_z(angle):
     angle = angle / 180 * pi
-    if len(trans_matrix) == 0:
+    if len(globalParam.trans_matrix) == 0:
         print("Ошибка", "График не задан")
         return
 
@@ -153,7 +127,7 @@ def spin_z(angle, trans_matrix):
                        [0, 0, 1, 0],
                        [0, 0, 0, 1]]
 
-    rotate_matrix(rotating_matrix, trans_matrix)
+    rotate_matrix(rotating_matrix)
 
     build_graph()
 
